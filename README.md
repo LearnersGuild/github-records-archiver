@@ -23,7 +23,7 @@ Backs up a GitHub organization's repositories and all their associated informati
 
 ## Usage
 
-`bin/archive [ORGANIZATION]`
+`bin/archive [ORGANIZATION] [ARCHIVE_DIR]`
 
 You'll want to set the following environmental variable:
 
@@ -36,14 +36,37 @@ You *may* set the following environmental variables:
 
 These can be passed as `GITHUB_TOKEN=123ABC GITHUB_ORGANIZATION=whitehouse bin/archive`.
 
-You can also add the values to a `.env` file in the project's root directory, which will be automatically set as environmental variables.
+You can also add the values to a `.env` file in the project's root directory, which will be automatically set as environmental variables. Providing arguments to the `./bin/archive` script will override the environment variables.
 
 ## Output
 
-The script will create an `archive` directory, with one folder for each repository.
+The script will create an `archive` directory, with a folder for each owner/organization containing all of the repoitories as subfolders.
 
-Within each folder will be the repository content as a git repository.
+Within each subfolder will be the repository content as a git repository.
 
-If the repository has a Wiki, the wiki will be cloned as a `wiki` subfolder, as a Git repository.
+If the repository has a Wiki, the wiki will be cloned as a `_wiki` subfolder, as a Git repository.
 
-If the repository has issues or pull requests, it will create an `issues` sub-folder with each issue and its associated comments stored as both markdown (human readable) and JSON (machine readable).
+If the repository has issues or pull requests, it will create an `_issues` subfolder with each issue and its associated comments stored as both markdown (human readable) and JSON (machine readable).
+
+The folder structure will look like this:
+
+```
+<ARCHIVE_DIR>/
+├── <OWNER/ORG DIR 1>
+│   ├── _teams
+|   │   ├── team_one.md
+|   │   ├── team_two.md
+|   │   ├── ...
+│   ├── <REPO 1>
+|   │   ├── _wiki
+|   │   ├── _issues
+|   │   ├── .git
+|   │   ├── ...
+│   ├── <REPO 2>
+│   ├── ...
+├── <OWNER/ORG DIR 1>
+│   ├── _teams
+│   ├── <REPO 1>
+│   ├── <REPO 2>
+│   ├── ...
+```
