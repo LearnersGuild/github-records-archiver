@@ -22,12 +22,16 @@ module GitHubRecordsArchiver
     end
 
     def repo_dir
-      @repo_dir ||= File.expand_path data[:name], GitHubRecordsArchiver.dest_dir
+      @repo_dir ||= File.expand_path data[:name], owner_dir
+    end
+
+    def owner_dir
+      @owner_dir ||= File.expand_path data[:owner][:login], GitHubRecordsArchiver.dest_dir
     end
 
     def issues_dir
       @issues_dir ||= begin
-        dir = File.expand_path 'issues', repo_dir
+        dir = File.expand_path '_issues', repo_dir
         FileUtils.mkdir_p(dir) unless Dir.exist?(dir)
         dir
       end

@@ -38,7 +38,9 @@ module GitHubRecordsArchiver
     end
 
     def dest_dir
-      ENV['GITHUB_ARCHIVE_DIR'] || File.expand_path('./archive', Dir.pwd)
+      @dest_dir ||= File.expand_path('./archive', Dir.pwd)
     end
+
+    attr_writer :dest_dir
   end
 end

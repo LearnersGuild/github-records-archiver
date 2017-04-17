@@ -39,7 +39,7 @@ module GitHubRecordsArchiver
 
     def teams_dir
       @teams_dir ||= begin
-        dir = File.expand_path 'teams', archive_dir
+        dir = File.expand_path '_teams', archive_dir
         FileUtils.mkdir_p(dir) unless Dir.exist?(dir)
         dir
       end

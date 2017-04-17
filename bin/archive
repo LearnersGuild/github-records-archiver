@@ -22,7 +22,10 @@ archiver = GitHubRecordsArchiver
 pwd      = Dir.pwd
 start    = Time.now
 org_name = ARGV[0] || ENV['GITHUB_ORGANIZATION']
+dest_dir = ARGV[1] || ENV['GITHUB_ARCHIVE_DIR']
 org      = archiver::Organization.new org_name
+
+archiver.dest_dir = dest_dir
 
 log "Starting archive for @#{org.name} in #{org.archive_dir}"
 
@@ -33,11 +36,15 @@ log "Found #{org.repos.count} repos"
 Parallel.each(org.repos, progress: 'Archiving repos') do |repo|
   begin
     repo.clone
-    repo.wiki.clone unless repo.wiki.nil?
     Parallel.each(repo.issues, &:archive)
+    repo.wiki.clone unless repo.wiki.nil?
   rescue GitHubRecordsArchiver::GitError => e
-    error "Failed to archive #{repo.name}"
-    error e.message
+    if e.message =~ /wiki/
+      error "No wiki found for #{repo.name}"
+    else
+      error "Failed to archive #{repo.name}"
+      error e.message
+    end
   end
 end
 
